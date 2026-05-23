@@ -1,0 +1,6 @@
+{
+  "name": "Al Hamd Fabrics",
+  "description": "Premium Ladies & Gents Suits, 3-Piece & 2-Piece Fabrics - Raiwind Road, Manga Mandi, Lahore.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

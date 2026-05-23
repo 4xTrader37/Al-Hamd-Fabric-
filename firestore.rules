@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Safety Net (Default Deny Catch-All)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper: Validate basic string format and size limit to prevent Denial of Wallet
+    function isValidString(val, maxLen) {
+      return val is string && val.size() > 0 && val.size() <= maxLen;
+    }
+
+    // Helper: Validate optional string format allowing empty values
+    function isOptionalString(val, maxLen) {
+      return val is string && val.size() <= maxLen;
+    }
+
+    // Helper: Validate standard ID naming convention without sensitive regex
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Helper: Validate numeric format (integer or float)
+    function isValidNumber(val) {
+      return val is int || val is float;
+    }
+
+    // 2. Orders Collection
+    match /orders/{orderId} {
+      // Allow guests and customers to create orders safely
+      allow create: if true;
+
+      // Allow reads of an order by its exact ID (e.g., for receipt verification)
+      allow get: if true;
+      
+      // Allow public listing of orders (optionally filtering or admin view)
+      allow list: if true;
+
+      // Restricting updates or deletions to system or authorized admins (default deny)
+      allow update, delete: if false;
+    }
+
+    // 3. Feedback Collection
+    match /feedback/{feedbackId} {
+      // Allow guests to submit feedback
+      allow create: if isValidId(feedbackId)
+        && request.resource.data.keys().hasAll(['name', 'email', 'phone', 'message', 'createdAt'])
+        && request.resource.data.keys().size() == 5
+        && isValidString(request.resource.data.name, 100)
+        && isValidString(request.resource.data.email, 100)
+        && isValidString(request.resource.data.phone, 30)
+        && isValidString(request.resource.data.message, 1000)
+        && isValidString(request.resource.data.createdAt, 50);
+
+      allow read, update, delete: if false;
+    }
+
+    // 4. Subscribers Collection
+    match /subscribers/{emailId} {
+      // Use email or encoded ID
+      allow create, get: if isValidId(emailId)
+        && request.resource.data.keys().hasAll(['name', 'email', 'subscribedAt'])
+        && request.resource.data.keys().size() == 3
+        && isValidString(request.resource.data.name, 100)
+        && isValidString(request.resource.data.email, 100)
+        && isValidString(request.resource.data.subscribedAt, 50);
+
+      allow list, update, delete: if false;
+    }
+
+    // 5. Connection Test Collection
+    match /test/{docId} {
+      allow read: if true;
+    }
+  }
+}

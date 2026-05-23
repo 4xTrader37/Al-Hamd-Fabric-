@@ -1,0 +1,184 @@
+{
+  "entities": {
+    "Order": {
+      "title": "Order",
+      "description": "Premium fabric unstitched order details",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique order auto-generated ID"
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Name of the customer placing the order"
+        },
+        "phone": {
+          "type": "string",
+          "description": "WhatsApp or calling number of the customer"
+        },
+        "shippingAddress": {
+          "type": "string",
+          "description": "Complete mailing and dispatch address"
+        },
+        "city": {
+          "type": "string",
+          "description": "Target delivery city in Pakistan"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Special rider instructions or suit customization details"
+        },
+        "items": {
+          "type": "array",
+          "description": "List of unstitched fabrics purchased"
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Price sum of all checked fabrics in Rs"
+        },
+        "shippingCost": {
+          "type": "number",
+          "description": "TCS delivery fees"
+        },
+        "totalBill": {
+          "type": "number",
+          "description": "Grand total bill amount in Rs"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Time the order was written to Firestore"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "confirmed", "shipped", "delivered", "cancelled"],
+          "description": "Active processing state of order"
+        }
+      },
+      "required": ["customerName", "phone", "shippingAddress", "city", "items", "subtotal", "shippingCost", "totalBill", "createdAt", "status"]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "Customer queries, complaints or callback requests",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Auto-assigned ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Customer full name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Customer electronic mail address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "WhatsApp contact number"
+        },
+        "message": {
+          "type": "string",
+          "description": "The custom question or help message"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Time message was created"
+        }
+      },
+      "required": ["name", "email", "phone", "message", "createdAt"]
+    },
+    "Subscriber": {
+      "title": "Subscriber",
+      "description": "Newsletter mailing list subscribers",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Email as ID or auto-assigned"
+        },
+        "name": {
+          "type": "string",
+          "description": "Subscriber name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address"
+        },
+        "subscribedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Mailing sign up timestamp"
+        }
+      },
+      "required": ["name", "email", "subscribedAt"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Product review with admin approval state",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique review ID"
+        },
+        "productId": {
+          "type": "string",
+          "description": "The product ID being reviewed"
+        },
+        "productName": {
+          "type": "string",
+          "description": "Name of the product in the storefront"
+        },
+        "name": {
+          "type": "string",
+          "description": "User submitter's full name"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Dye/yarn rating score from 1 to 5"
+        },
+        "comment": {
+          "type": "string",
+          "description": "Detailed review comment"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved"],
+          "description": "Approval state"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Form creation timestamp"
+        },
+        "date": {
+          "type": "string",
+          "description": "Formatted date text shown in front-end"
+        }
+      },
+      "required": ["productId", "productName", "name", "rating", "comment", "status", "createdAt", "date"]
+    }
+  },
+  "firestore": {
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Unstitched suit orders created by visitors"
+    },
+    "/feedback/{feedbackId}": {
+      "schema": "Feedback",
+      "description": "Customer help and feedback queries"
+    },
+    "/subscribers/{emailId}": {
+      "schema": "Subscriber",
+      "description": "Newsletter email list"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Customer reviews awaiting validation or approved by admin Zaffar Iqbal"
+    }
+  }
+}
